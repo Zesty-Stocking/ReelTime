@@ -2,17 +2,15 @@ import React from "react";
 
 import Landing from './Landing';
 import Link from './Link';
-import Video from "./Video.jsx";
-import ChatSpace from "./ChatSpace.jsx";
+import VideoWrapper from './VideoWrapper'
 
-import { getMyId, establishPeerConnection } from '../lib/webrtc';
-import readFile from '../lib/fileReader';
-import appendChunk from '../lib/mediaSource';
+import { getMyId } from '../lib/webrtc';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.setFile = this.setFile.bind(this);
+    this.hideLink = this.hideLink.bind(this);
 
     const params = new URLSearchParams(location.search.slice(1));
     const isSource = !params.has('id');
@@ -31,17 +29,22 @@ class App extends React.Component {
   componentDidMount() {
     if (this.state.isSource) {
       this.initAsSource();
-    } else {
-      this.initAsReceiver(this.state.peerId);
     }
   }
 
   setFile(e) {
+    console.log('setting file:', e.target.files[0]);
     this.setState({
       file: e.target.files[0],
       showLanding: false,
       showBody: true,
     });
+  }
+
+  hideLink() {
+    this.setState({
+      showLink: false,
+    })
   }
 
   initAsSource() {
@@ -51,41 +54,6 @@ class App extends React.Component {
         myId,
       });
     });
-
-    establishPeerConnection().then((conn) => {
-      // Now connected to receiver as source
-
-      // Remove the link display
-      this.setState({
-        showLink: false,
-      });
-
-      // Read in the file from disk.
-      // For each chunk, append it to the local MediaSource and send it to the other peer
-      const video = document.querySelector('.video');
-      readFile(this.state.file, (chunk) => {
-        appendChunk(chunk, video);
-        conn.send(chunk);
-      });
-    })
-    .catch(console.error.bind(console));
-  }
-
-  initAsReceiver(peerId) {
-    establishPeerConnection(peerId).then((conn) => {
-      // Now connected to source as receiver
-
-      // Listen for incoming video data from source
-      conn.on('data', (data) => {
-        if (typeof data === 'string') {
-          console.log(data);
-        } else {
-          // Append each received ArrayBuffer to the local MediaSource
-          const video = document.querySelector('.video');          
-          appendChunk(data, video);
-        }
-      });
-    });
   }
 
   render() {
@@ -93,10 +61,14 @@ class App extends React.Component {
       <div>
         {this.state.showLanding ? <Landing setFile={this.setFile} /> : null}
         {this.state.showLink ? <Link myId={this.state.myId} /> : null}
-        {this.state.showBody ? <div className="wrapper">
-          <Video socket={this.props.socket} />
-          <ChatSpace socket={this.props.socket} isSource={this.state.isSource} peerId={this.state.peerId} />
-        </div> : null}
+        {this.state.showBody ? 
+          <VideoWrapper 
+            socket={this.props.socket}
+            isSource={this.state.isSource}
+            peerId={this.state.peerId}
+            hideLink={this.hideLink}
+            file={this.state.file}
+          /> : null}
       </div>
     );
   }
