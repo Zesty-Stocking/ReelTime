@@ -64,17 +64,13 @@ class VideoWrapper extends Component {
   render() {
     return (
       <div>
-        {/*this.state.isFile ? 
+        {this.props.videoType === 'file' ? 
           <div className="wrapper">
             <Video socket={this.props.socket} />
             <ChatSpace socket={this.props.socket} isSource={this.props.isSource} peerId={this.props.peerId} />
           </div> : 
-          <div> This ain't no link boy </div>
-        */}
-        <div className="wrapper">
-          <Video socket={this.props.socket} />
-          <ChatSpace socket={this.props.socket} isSource={this.props.isSource} peerId={this.props.peerId} />
-        </div>
+          <div> This ain't no file boy! </div>
+        }
       </div>
     );
   }
