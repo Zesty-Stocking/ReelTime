@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 
 import Video from "./Video.jsx";
+import YouTubeVideo from "./YouTubeVideo.jsx";
 import ChatSpace from "./ChatSpace.jsx";
 
 import { establishPeerConnection } from '../lib/webrtc';
@@ -53,23 +54,26 @@ class VideoWrapper extends Component {
           console.log(data);
         } else {
           // Append each received ArrayBuffer to the local MediaSource
-          const video = document.querySelector('.video');          
+          const video = document.querySelector('.video');
           appendChunk(data, video);
         }
       });
-      
+
     });
   }
 
   render() {
     return (
       <div>
-        {this.props.videoType === 'file' ? 
+        {this.props.videoType === 'file' ?
           <div className="wrapper">
             <Video socket={this.props.socket} />
             <ChatSpace socket={this.props.socket} isSource={this.props.isSource} peerId={this.props.peerId} />
-          </div> : 
-          <div> This ain't no file boy! </div>
+          </div> :
+          <div className="wrapper">
+            <YouTubeVideo socket={this.props.socket} />
+            <ChatSpace socket={this.props.socket} isSource={this.props.isSource} peerId={this.props.peerId} />
+          </div>
         }
       </div>
     );
