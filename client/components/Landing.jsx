@@ -14,9 +14,13 @@ const Landing = (props) => (
         <div className="intro-text">
           <div className="intro-lead-in">Watch TV with your friends</div>
           <div className="intro-heading">But in your underwear</div>
-          <p className="landing-drop-text landing-circle">
+          <p>
             Drop Your Video File Here
-            <input type="file" id="files" className="landing-circle drop-box" name="file" onChange={props.setFile} />
+            <input type="file" id="files" name="file" onChange={props.setFile} />
+            <form id="youtubeform" name="youtubeform" onSubmit={props.setYoutubeLink} >
+              <input type="text" name="link" id="youtubelink" />
+              <input type="submit" value="submit" />
+            </form>
           </p>
         </div>
       </div>

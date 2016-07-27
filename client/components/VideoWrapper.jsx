@@ -8,20 +8,16 @@ import readFile from '../lib/fileReader';
 import appendChunk from '../lib/mediaSource';
 
 class VideoWrapper extends Component {
-  constructor(props) {
-    super(props);
-
-  }
 
   componentDidMount() {
     if (this.props.isSource) {
-      this.initAsSource();
+      this.initAsSource(this.props.videoType);
     } else {
-      this.initAsReceiver(this.props.peerId);
+      this.initAsReceiver(this.props.videoType, this.props.peerId);
     }
   }
 
-  initAsSource() {
+  initAsSource(videoType) {
     //establishpeerconnection here
     establishPeerConnection().then((conn) => {
       // Now connected to receiver as source
@@ -29,22 +25,28 @@ class VideoWrapper extends Component {
       // Remove the link display in app.jsx
       this.props.hideLink();
 
-      // Read in the file from disk.
-      // For each chunk, append it to the local MediaSource and send it to the other peer
-      const video = document.querySelector('.video');
-      readFile(this.props.file, (chunk) => {
-        appendChunk(chunk, video);
-        conn.send(chunk);
-      });
+      // Check if file or link:
+      if (videoType === 'file') {
+        console.log('Sending a file!');
+        // Read in the file from disk.
+        // For each chunk, append it to the local MediaSource and send it to the other peer
+        const video = document.querySelector('.video');
+        readFile(this.props.file, (chunk) => {
+          appendChunk(chunk, video);
+          conn.send(chunk);
+        });
+      } else {
+        console.log('Sending a link instead!');
+      }
     })
     .catch(console.error.bind(console));
   }
 
-  initAsReceiver() {
+  initAsReceiver(videoType, peerId) {
     //establishpeerconnection here
-    establishPeerConnection(this.props.peerId).then((conn) => {
+    establishPeerConnection(peerId).then((conn) => {
       // Now connected to source as receiver
-
+      console.log('connecting as receiever~');
       // Listen for incoming video data from source
       conn.on('data', (data) => {
         if (typeof data === 'string') {
@@ -55,14 +57,24 @@ class VideoWrapper extends Component {
           appendChunk(data, video);
         }
       });
+      
     });
   }
 
   render() {
     return (
-      <div className="wrapper">
-        <Video socket={this.props.socket} />
-        <ChatSpace socket={this.props.socket} isSource={this.props.isSource} peerId={this.props.peerId} />
+      <div>
+        {/*this.state.isFile ? 
+          <div className="wrapper">
+            <Video socket={this.props.socket} />
+            <ChatSpace socket={this.props.socket} isSource={this.props.isSource} peerId={this.props.peerId} />
+          </div> : 
+          <div> This ain't no link boy </div>
+        */}
+        <div className="wrapper">
+          <Video socket={this.props.socket} />
+          <ChatSpace socket={this.props.socket} isSource={this.props.isSource} peerId={this.props.peerId} />
+        </div>
       </div>
     );
   }
