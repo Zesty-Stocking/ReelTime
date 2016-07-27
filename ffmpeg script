@@ -1,0 +1,4 @@
+ffmpeg -i unfragmented.mp4 -g 52 \
+-strict experimental -c:a aac -ab 64k -vcodec libx264 -vb 448k \
+-f mp4 -movflags frag_keyframe+empty_moov \
+fragmented.mp4
