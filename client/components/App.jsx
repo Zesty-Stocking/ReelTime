@@ -77,16 +77,16 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        {this.state.showLanding ? 
-          <Landing 
-            setFile={this.setFile} 
+        {this.state.showLanding ?
+          <Landing
+            setFile={this.setFile}
             setYoutubeLink={this.setYoutubeLink} /> : null}
-        {this.state.showLink ? 
-          <Link 
+        {this.state.showLink ?
+          <Link
             myId={this.state.myId}
             type={this.state.videoType} /> : null}
-        {this.state.showBody ? 
-          <VideoWrapper 
+        {this.state.showBody ?
+          <VideoWrapper
             socket={this.props.socket}
             isSource={this.state.isSource}
             peerId={this.state.peerId}
