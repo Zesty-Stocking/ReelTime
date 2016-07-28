@@ -9,6 +9,13 @@ import readFile from '../lib/fileReader';
 import appendChunk from '../lib/mediaSource';
 
 class VideoWrapper extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      youtubeLink: props.youtubeLink
+    };
+  }
 
   componentDidMount() {
     if (this.props.isSource) {
@@ -28,7 +35,6 @@ class VideoWrapper extends Component {
 
       // Check if file or link:
       if (videoType === 'file') {
-        console.log('Sending a file!');
         // Read in the file from disk.
         // For each chunk, append it to the local MediaSource and send it to the other peer
         const video = document.querySelector('.video');
@@ -36,8 +42,8 @@ class VideoWrapper extends Component {
           appendChunk(chunk, video);
           conn.send(chunk);
         });
-      } else {
-        console.log('Sending a link instead!');
+      } else if (videoType === 'youtube') {
+        conn.send(this.state.youtubeLink);
       }
     })
     .catch(console.error.bind(console));
@@ -47,11 +53,10 @@ class VideoWrapper extends Component {
     //establishpeerconnection here
     establishPeerConnection(peerId).then((conn) => {
       // Now connected to source as receiver
-      console.log('connecting as receiever~');
       // Listen for incoming video data from source
       conn.on('data', (data) => {
         if (typeof data === 'string') {
-          console.log(data);
+          this.setState({ youtubeLink: data });
         } else {
           // Append each received ArrayBuffer to the local MediaSource
           const video = document.querySelector('.video');
@@ -71,7 +76,7 @@ class VideoWrapper extends Component {
             <ChatSpace socket={this.props.socket} isSource={this.props.isSource} peerId={this.props.peerId} />
           </div> :
           <div className="wrapper">
-            <YouTubeVideo socket={this.props.socket} />
+            <YouTubeVideo socket={this.props.socket} url={ this.state.youtubeLink }/>
             <ChatSpace socket={this.props.socket} isSource={this.props.isSource} peerId={this.props.peerId} />
           </div>
         }

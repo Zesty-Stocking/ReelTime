@@ -5,10 +5,6 @@ class YouTubeVideo extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      url: props.url
-    };
-
     this.onPressPlay = this.onPressPlay.bind(this);
     this.onPressPause = this.onPressPause.bind(this);
   }
@@ -24,9 +20,9 @@ class YouTubeVideo extends React.Component {
   render () {
     return (
       <ReactPlayer
-        url={ this.state.url }
+        url={ this.props.url }
         controls
-        playing
+        playing={ false }
         onPlay={ this.onPressPlay }
         onPause={ this.onPressPause }
       />
