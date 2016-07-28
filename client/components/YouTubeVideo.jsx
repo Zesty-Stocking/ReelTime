@@ -1,18 +1,36 @@
 import React from 'react';
+import ReactPlayer from 'react-player'
 
 class YouTubeVideo extends React.Component {
-  render() {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      url: props.url
+    };
+
+    this.onPressPlay = this.onPressPlay.bind(this);
+    this.onPressPause = this.onPressPause.bind(this);
+  }
+
+  onPressPlay() {
+    console.log('pressed Play');
+  }
+
+  onPressPause() {
+    console.log('pressed Pause');
+  }
+
+  render () {
     return (
-      <iframe
-       id="ytplayer"
-        type="text/html"
-        width="640"
-        height="390"
-        src="https://www.youtube.com/embed/M7lc1UVf-VE?autoplay=1&origin=http://example.com"
-        frameborder="0"
-      >
-      </iframe>
-    );
+      <ReactPlayer
+        url={ this.state.url }
+        controls
+        playing
+        onPlay={ this.onPressPlay }
+        onPause={ this.onPressPause }
+      />
+    )
   }
 }
 
