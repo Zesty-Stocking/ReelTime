@@ -5,16 +5,26 @@ class YouTubeVideo extends React.Component {
   constructor(props) {
     super(props);
 
-    this.onPressPlay = this.onPressPlay.bind(this);
-    this.onPressPause = this.onPressPause.bind(this);
+    this.state = {
+      playing: false,
+    }
+
+    this.emitPlayAndListenForPause = this.emitPlayAndListenForPause.bind(this);
+    this.emitPauseAndListenForPlay = this.emitPauseAndListenForPlay.bind(this);
   }
 
-  onPressPlay() {
-    console.log('pressed Play');
+  emitPlayAndListenForPause() {
+    this.props.socket.emit('play', 0);
+    this.props.socket.on('pause', (otherTime) => {
+      this.setState({ playing: false });
+    });
   }
 
-  onPressPause() {
-    console.log('pressed Pause');
+  emitPauseAndListenForPlay() {
+    this.props.socket.emit('pause', 0);
+    this.props.socket.on('play', (otherTime) => {
+      this.setState({ playing: true });
+    });
   }
 
   render () {
@@ -22,9 +32,9 @@ class YouTubeVideo extends React.Component {
       <ReactPlayer
         url={ this.props.url }
         controls
-        playing={ false }
-        onPlay={ this.onPressPlay }
-        onPause={ this.onPressPause }
+        playing={ this.state.playing }
+        onPlay={ this.emitPlayAndListenForPause }
+        onPause={ this.emitPauseAndListenForPlay }
       />
     )
   }
