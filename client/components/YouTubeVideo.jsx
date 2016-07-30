@@ -27,23 +27,23 @@ class YouTubeVideo extends React.Component {
       var currentTime = Math.floor(this.state.played * this.state.duration);
       var targetTime = Math.floor(currentTime - 10, 0);
       var targetFraction = targetTime / this.state.duration;
-      this.syncVideos(this.state.played, targetFraction);
+      this.seekTo(targetFraction);
     });
 
     this.props.socket.on('progress', (otherProgress) => {
       // Sync videos if they are way off:
-      this.syncVideos(this.state.played, otherProgress.played);
+      var currentTime = Math.floor(this.state.played * this.state.duration);
+      var otherTime = Math.floor(otherProgress.played * this.state.duration);
+
+      if (currentTime > otherTime + 1 || currentTime < otherTime - 1) {
+        console.log('syncing videos!');
+        this.seekTo(otherProgress.played);
+      }
     });
   }
 
-  syncVideos(currentPlayedFraction, otherPlayedFraction) {
-    var currentTime = Math.floor(currentPlayedFraction * this.state.duration);
-    var otherTime = Math.floor(otherPlayedFraction * this.state.duration);
-
-    if (currentTime > otherTime + 1 || currentTime < otherTime - 1) {
-      console.log('syncing videos!');
-      this.refs.player.seekTo(otherPlayedFraction);
-    }
+  seekTo(targetFraction) {
+    this.refs.player.seekTo(targetFraction);
   }
 
   onProgress(state) {
