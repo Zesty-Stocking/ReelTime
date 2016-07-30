@@ -8,7 +8,8 @@ class YouTubeVideo extends React.Component {
     this.state = {
       played: 0,
       loaded: 0,
-      duration: 0
+      duration: 0,
+      seeking: false
     }
 
     this.emitPlayAndListenForPause = this.props.emitPlayAndListenForPause.bind(this);
@@ -43,13 +44,20 @@ class YouTubeVideo extends React.Component {
   }
 
   seekTo(targetFraction) {
+    // stop emitting progress temporarily
+    this.setState({ seeking: true });
     this.refs.player.seekTo(targetFraction);
+    // resume emitting progress
+    this.setState({ seeking: false });
   }
 
   onProgress(state) {
-    this.setState(state);
-    // emit the progress of the video so server can listen and keep the two peers in sync
-    this.props.socket.emit('progress', state);
+    this.setState(state);    
+    // only emit progress if we're not in the middle of seeking
+    if (!this.state.seeking) {
+      // emit the progress of the video so server can listen and keep the two peers in sync
+      this.props.socket.emit('progress', state);  
+    }
   }
 
   render () {
