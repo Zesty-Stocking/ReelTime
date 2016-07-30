@@ -63,6 +63,7 @@ class YouTubeVideo extends React.Component {
   render () {
     return (
       <ReactPlayer
+        className='video'
         ref='player'
         url={ this.props.url }
         controls
