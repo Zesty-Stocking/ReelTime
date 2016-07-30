@@ -133,18 +133,23 @@ class VideoWrapper extends Component {
     };
 
     var playCommands = {'play': playFunction};
-    var goBackCommands = {'go back': goBackFunction};
 
     // define words that empirically sound like our main command, and synonyms
     var pauseWords = ['pause', 'call', 'car', 'cars', 'cause', 'hans', 
       'hollis', 'hot', 'palm', 'paul', 'paula\'s', 'paw', 'pawn', 
       'paws', 'pod', 'pods', 'polish', 'pond', 'posh'];
+    var goBackWords = ['go back', 'goback'];
     var muteWords = ['mute', 'new', 'news', 'newt', 'nude', 'use', 'used', 'you'];
     var unmuteWords = ['unmute', 'enhance', 'enhanced', 'in hands', 'in hats', 'n hance'];
 
     // generate a command object for each array of command words
     var pauseCommands = pauseWords.reduce(function(obj, word) {
       obj[word] = pauseFunction;
+      return obj;
+    }, {});
+
+    var goBackCommands = goBackWords.reduce(function(obj, word) {
+      obj[word] = goBackFunction;
       return obj;
     }, {});
 
