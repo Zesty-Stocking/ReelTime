@@ -71,7 +71,8 @@ class VideoWrapper extends Component {
         }
       });
 
-    });
+    })
+    .catch(console.error.bind(console));
   }
 
   initListeners() {

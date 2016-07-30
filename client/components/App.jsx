@@ -68,9 +68,13 @@ class App extends React.Component {
   initAsSource() {
     // Act as source: display a link that may be sent to a receiver
     getMyId().then((myId) => {
+      console.log('---inside of initAsSource...then', myId);
+
       this.setState({
         myId,
       });
+    }).catch((err) => {
+      console.log('--- inside of initAsSource...catch', err);
     });
   }
 

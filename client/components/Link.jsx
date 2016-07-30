@@ -1,20 +1,23 @@
 import React from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 
-let host = process.env.NODE_ENV === 'production' ? 'https://reeltimeapp.herokuapp.com/' : 'http://localhost:3000/'; 
+let host = process.env.NODE_ENV === 'production' ?
+             'https://staging-reeltime.herokuapp.com' :
+             `http://localhost:3000/`;
 
 class Link extends React.Component {
   constructor(props) {
     super(props);
-    
+
     this.state = {
       copied: false
     }
   }
 
   render() {
-    let url = host + '?id=' + this.props.myId + '&video=' + this.props.type;
-
+    let url = `${host}?id=${this.props.myId}&video=${this.props.type}`;
+    console.log('---inside of Link#render');
+    console.log(url);
     return (
       <div id="link">
         <div id="link-message">
@@ -34,7 +37,7 @@ class Link extends React.Component {
       </div>
     );
   }
-  
+
 }
 
 Link.propTypes = {

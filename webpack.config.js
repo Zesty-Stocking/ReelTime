@@ -28,11 +28,11 @@ module.exports = {
   plugins: debug ? [] : [
     new webpack.DefinePlugin({
       'process.env': {
-        'NODE_ENV': '"production"'
+        'NODE_ENV': '"production"',
+        'PORT': JSON.stringify(process.env.PORT || 3000)
       }
     }),
     new webpack.optimize.DedupePlugin(),
-    new webpack.optimize.OccurenceOrderPlugin(),
-    new webpack.optimize.UglifyJsPlugin({ mangle: false, sourcemap: false }),
+    new webpack.optimize.OccurenceOrderPlugin()
   ],
 };
