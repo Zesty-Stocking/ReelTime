@@ -1,9 +1,17 @@
 import React from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 
-let host = process.env.NODE_ENV === 'production' ?
-             'https://staging-reeltime.herokuapp.com' :
-             `http://localhost:3000/`;
+var host;
+var NODE_ENV = process.env.NODE_ENV;
+
+if (NODE_ENV === 'production') {
+  host = 'https://reeltimeapp.herokuapp.com';
+} else if (NODE_ENV === 'staging') {
+  host = 'https://staging-reeltime.herokuapp.com';
+} else {
+  let port = 3000; // or whatever the port is for express server
+  host = `http://localhost:${port}/`;
+}
 
 class Link extends React.Component {
   constructor(props) {
@@ -16,8 +24,7 @@ class Link extends React.Component {
 
   render() {
     let url = `${host}?id=${this.props.myId}&video=${this.props.type}`;
-    console.log('---inside of Link#render');
-    console.log(url);
+
     return (
       <div id="link">
         <div id="link-message">

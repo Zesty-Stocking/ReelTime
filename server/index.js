@@ -2,7 +2,6 @@
 const express = require('express');
 const socket = require('socket.io');
 const http = require('http');
-//const ExpressPeerServer = require('peer').ExpressPeerServer;
 
 // Init
 const app = express();
@@ -10,18 +9,11 @@ const server = http.createServer(app);
 const io = socket.listen(server);
 
 // Config
-const PORT = process.env.PORT || 3000; // Heroku wants the env var to be PORT
+const PORT = process.env.PORT || 3000;
 
 // Routes
-//var peerServerOpts = {
-//  debug: true,
-//  allow_discovery: true
-//};
-
-//var peerServer = ExpressPeerServer(server, peerServerOpts);
 
 app.use(express.static(`${__dirname}/../client`));
-//app.use('/peerjs', peerServer);
 
 // Socket.io
 io.on('connection', (socket) => {
@@ -68,7 +60,4 @@ io.on('connection', (socket) => {
 
 server.listen(PORT);
 
-//console.log('--- inside of server/index');
-//console.log(peerServer._options);
 console.log(`Express server listening on port ${PORT}`);
-console.log(`PeerJS server listening on port  ${PORT}`);

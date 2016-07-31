@@ -1,11 +1,10 @@
 import Peer from 'peerjs';
 
+const NODE_ENV = process.env.NODE_ENV;
 var host, secure, port;
 
-if (process.env.NODE_ENV === 'production') {
-  //host = 'staging-reeltime.herokuapp.com';
+if (NODE_ENV === 'production' || NODE_ENV === 'staging') {
   host = 'reeltime-peerjs.herokuapp.com';
-  //host = 'peerjs-server-simple.herokuapp.com';
   port = 443;
   secure = true;
 } else {
@@ -14,8 +13,7 @@ if (process.env.NODE_ENV === 'production') {
   secure = false;
 }
 
-// const peer = new Peer({ key: 'dyf2h2fyul2nvcxr' });
-var peerOpts = {
+const peerOpts = {
   key: 'peerjs',
   host: host,
   port: port,
@@ -23,15 +21,7 @@ var peerOpts = {
   secure: secure
 };
 
-// manually-set the id, because server is not doing it properly ATM
-var randomId = function () {
-  return (Math.random().toString(36) + '0000000000000000000').substr(2, 16);
-};
-
 const peer = new Peer(peerOpts);
-
-console.log('---inside of lib/webrtc');
-console.log(peer.options);
 
 // Returns a Promise that is resolved with this peer's ID, assigned by the signaling server.
 const getMyId = () => new Promise((resolve, reject) => {
